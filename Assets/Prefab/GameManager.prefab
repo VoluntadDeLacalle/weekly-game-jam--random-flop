@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelTextMesh: {fileID: 0}
-  maxLevels: 2
+  maxLevels: 10
   currentLevel: 0
   gameStart: 0
   hasWon: 0
