@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class GameManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
     public TMPro.TextMeshProUGUI levelTextMesh;
     public TMPro.TextMeshProUGUI tempFlavorTextMesh;
     public TMPro.TextMeshProUGUI highestLevelMesh;
+    public Slider levelSlider;
 
     public int maxLevels;
     public int currentLevel;
@@ -18,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     public bool gameStart;
     public bool hasWon;
+    public bool canTry;
 
     public enum Difficulties
     {
@@ -55,17 +58,19 @@ public class GameManager : MonoBehaviour
         attempts = 0;
         hasWon = false;
         gameStart = false;
+        canTry = true;
     }
 
     void Start()
     {
-        levelTextMesh.text = "Level: " + currentLevel + "\nDifficulty: " + difficulty.ToString() + "\nAttempts: " + attempts;
+        levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
+        levelSlider.DOValue(((float)currentLevel / (float)maxLevels), 1).Play();
         highestLevelMesh.text = "Highest Level: " + highestLevel;
     }
 
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space) && gameStart && !hasWon)
+        if (Input.GetKeyUp(KeyCode.Space) && gameStart && !hasWon && canTry)
         {
             tempFlavorTextMesh.transform.DOKill();
             tempFlavorTextMesh.transform.DOScale(new Vector3(0.0001f, 0.0001f, 0.0001f), 0.25f);
@@ -83,6 +88,7 @@ public class GameManager : MonoBehaviour
     void tryNextLevel()
     {
         float rand = Random.Range(0.0f, 1.0f);
+        canTry = false;
 
         if (rand <= difficultyValues[difficulty])
         {
@@ -116,7 +122,9 @@ public class GameManager : MonoBehaviour
 
         attempts++;
 
-        levelTextMesh.text = "Level: " + currentLevel + "\nDifficulty: " + difficulty.ToString() + "\nAttempts: " + attempts;
+        
+        levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
+        levelSlider.DOValue(((float)currentLevel / (float)maxLevels), 1).Play();
         highestLevelMesh.text = "Highest Level: " + highestLevel;
 
         SaveSystem.SaveData();
@@ -134,24 +142,34 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            tempFlavorTextMesh.transform.DOScale(new Vector3(1, 1, 1), 1);
+            tempFlavorTextMesh.transform.DOScale(new Vector3(1, 1, 1), 1).OnComplete(canTryTrue);
         }
         
     }
 
     public void shakeText()
     {
-        tempFlavorTextMesh.transform.DOShakeRotation(1, new Vector3(0, 0, 5f), 10, 30, true);
+        tempFlavorTextMesh.transform.DOShakeRotation(1, new Vector3(0, 0, 15f), 10, 30, true).OnComplete(canTryTrue);
+    }
+
+    public void canTryTrue()
+    {
+        canTry = true;
     }
 
     public void exitButton()
     {
         gameStart = false;
+        canTry = false;
     }
 
     public void continueButton()
     {
         gameStart = true;
+        canTry = true;
+
+        tempFlavorTextMesh.transform.DOKill();
+        tempFlavorTextMesh.text = "";
     }
 
     public void ResetValues(int diffIndex)
@@ -161,10 +179,14 @@ public class GameManager : MonoBehaviour
         attempts = 0;
 
         gameStart = true;
+        canTry = true;
         difficulty = (Difficulties)diffIndex;
 
+        tempFlavorTextMesh.transform.DOKill();
         tempFlavorTextMesh.text = "";
-        levelTextMesh.text = "Level: " + currentLevel + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1) + "\nAttempts: " + attempts;
+
+        levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
+        levelSlider.DOValue(((float)currentLevel / (float)maxLevels), .75f).Play();
         highestLevelMesh.text = "Highest Level: " + highestLevel;
     }
 }
