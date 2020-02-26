@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public int maxLevels;
     public int currentLevel;
     public int highestLevel;
+    private float levelOffset;
     public int attempts;
 
     public bool gameStart;
@@ -55,7 +56,9 @@ public class GameManager : MonoBehaviour
 
         currentLevel = 1;
         highestLevel = 1;
+        levelOffset = (1.0f / (float)maxLevels);
         attempts = 0;
+
         hasWon = false;
         gameStart = false;
         canTry = true;
@@ -63,8 +66,16 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
-        levelSlider.DOValue(((float)currentLevel / (float)maxLevels), 1).Play();
+        if (difficulty != Difficulties.Impossible)
+        {
+            levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
+        }
+        else
+        {
+            levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1) + "?";
+        }
+
+        levelSlider.DOValue(((float)currentLevel / (float)maxLevels) - levelOffset, .75f).Play();
         highestLevelMesh.text = "Highest Level: " + highestLevel;
     }
 
@@ -97,10 +108,20 @@ public class GameManager : MonoBehaviour
 
             if (currentLevel > maxLevels)
             {
-                levelTextMesh.text = "You win!! ...Somehow?";
+                levelSlider.DOValue(((float)currentLevel / (float)maxLevels) - levelOffset, .75f).Play();
                 hasWon = true;
 
                 flavorText("Winner!");
+
+                attempts++;
+                if (difficulty != Difficulties.Impossible)
+                {
+                    levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
+                }
+                else
+                {
+                    levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1) + "?";
+                }
 
                 return;
             }
@@ -122,9 +143,17 @@ public class GameManager : MonoBehaviour
 
         attempts++;
 
-        
-        levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
-        levelSlider.DOValue(((float)currentLevel / (float)maxLevels), 1).Play();
+
+        if (difficulty != Difficulties.Impossible)
+        {
+            levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
+        }
+        else
+        {
+            levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1) + "?";
+        }
+
+        levelSlider.DOValue(((float)currentLevel / (float)maxLevels) - levelOffset, .75f).Play();
         highestLevelMesh.text = "Highest Level: " + highestLevel;
 
         SaveSystem.SaveData();
@@ -168,8 +197,11 @@ public class GameManager : MonoBehaviour
         gameStart = true;
         canTry = true;
 
-        tempFlavorTextMesh.transform.DOKill();
-        tempFlavorTextMesh.text = "";
+        if (currentLevel <= maxLevels)
+        {
+            tempFlavorTextMesh.transform.DOKill();
+            tempFlavorTextMesh.text = "";
+        }
     }
 
     public void ResetValues(int diffIndex)
@@ -185,8 +217,16 @@ public class GameManager : MonoBehaviour
         tempFlavorTextMesh.transform.DOKill();
         tempFlavorTextMesh.text = "";
 
-        levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
-        levelSlider.DOValue(((float)currentLevel / (float)maxLevels), .75f).Play();
+        if (difficulty != Difficulties.Impossible)
+        {
+            levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1);
+        }
+        else
+        {
+            levelTextMesh.text = "Attempts: " + attempts + "\nDifficulty: " + char.ToUpper(difficulty.ToString()[0]) + difficulty.ToString().Substring(1) + "?";
+        }
+
+        levelSlider.DOValue(((float)currentLevel / (float)maxLevels) - levelOffset, .75f).Play();
         highestLevelMesh.text = "Highest Level: " + highestLevel;
     }
 }
