@@ -43,9 +43,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9812b77ebe76f88469950270bc6072e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCam: {fileID: 0}
+  canvas: {fileID: 0}
   levelTextMesh: {fileID: 0}
+  tempFlavorTextMesh: {fileID: 0}
+  highestLevelMesh: {fileID: 0}
+  level1Text: {fileID: 0}
+  level10Text: {fileID: 0}
+  levelSliderPanel: {fileID: 0}
+  levelSlider: {fileID: 0}
+  backButton: {fileID: 0}
+  audSource: {fileID: 0}
+  nextClip: {fileID: 8300000, guid: c8dec694bfa48d54fb6dede4462a023f, type: 3}
+  bruhClip: {fileID: 8300000, guid: 4ba9db43af71cd34b9a3fdfa7ed21480, type: 3}
+  winClip: {fileID: 8300000, guid: 3e7249c92bb7d9b42a1021fff203d543, type: 3}
   maxLevels: 10
   currentLevel: 0
+  highestLevel: 0
+  attempts: 0
   gameStart: 0
   hasWon: 0
+  canTry: 0
+  shouldColor: 0
+  ColorChangeTime: 3
+  colorList:
+  - {r: 0.78431374, g: 0.19607843, b: 0.19607843, a: 0}
+  - {r: 0.78431374, g: 0.78431374, b: 0.19607843, a: 0}
+  - {r: 0.19607843, g: 0.78431374, b: 0.19607843, a: 0}
+  - {r: 0.19607843, g: 0.78431374, b: 0.78431374, a: 0}
+  - {r: 0.19607843, g: 0.19607843, b: 0.78431374, a: 0}
+  - {r: 0.78431374, g: 0.19607843, b: 0.78431374, a: 0}
   difficulty: 0
