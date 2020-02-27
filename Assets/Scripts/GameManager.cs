@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if ((Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonDown(0)) && gameStart && !hasWon && canTry)
+        if (Input.GetKeyUp(KeyCode.Space) && gameStart && !hasWon && canTry)
         {
             tempFlavorTextMesh.transform.DOKill();
             doTheKills();
